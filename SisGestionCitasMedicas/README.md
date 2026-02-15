@@ -232,5 +232,5 @@ El frontend inicia en `http://localhost:4200`.
 ## Clonar el Repositorio
 
 ```bash
-git clone https://github.com/oscarofpcc-coder/SisGestHospitalEP1.git
+git clone https://github.com/oscarofpcc-coder/Semana5Tarea1.git
 ```
