@@ -1,0 +1,57 @@
+<!-- PLANTILLA NAVBAR (Barra de Navegacion) -->
+<!-- ========================================== -->
+<!-- Barra de navegacion responsiva con Bootstrap 5 y ng-bootstrap -->
+
+<!-- navbar-dark bg-primary: Texto claro sobre fondo azul -->
+<!-- fixed-top: La barra se queda fija arriba aunque el usuario haga scroll -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+  <div class="container-fluid">
+    <!-- Logo/nombre de la app - siempre visible, enlaza al home -->
+    <a class="navbar-brand" routerLink="/">SisGestionCitas</a>
+
+    <!-- Boton hamburguesa: Solo visible en pantallas < lg (992px) -->
+    <!-- (click): Alterna el estado de colapsado/expandido -->
+    <button class="navbar-toggler" type="button" (click)="isCollapsed = !isCollapsed">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- [ngbCollapse]: Directiva de ng-bootstrap que colapsa/expande el contenido -->
+    <!-- Si isCollapsed es true, el menu esta oculto (en pantallas pequenas) -->
+    <div [ngbCollapse]="isCollapsed" class="collapse navbar-collapse">
+      <!-- Contenido del menu cambia segun el estado de autenticacion -->
+      @if (authService.isAuthenticated()) {
+        <!-- MENU PARA USUARIO AUTENTICADO -->
+        <!-- me-auto: Empuja los elementos siguientes hacia la derecha (margin-end: auto) -->
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <!-- routerLinkActive="active": Agrega la clase CSS 'active' cuando -->
+            <!-- la URL actual coincide con /empresas (resalta el enlace actual) -->
+            <a class="nav-link" routerLink="/empresas" routerLinkActive="active">Empresas</a>
+          </li>
+        </ul>
+        <!-- Seccion derecha: email del usuario y boton de logout -->
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <!-- Muestra el email del usuario logueado (solo texto, no es un enlace) -->
+            <span class="nav-link text-light">{{ authService.getEmail() }}</span>
+          </li>
+          <li class="nav-item">
+            <!-- (click): Ejecuta logout() | $event.preventDefault(): Evita que el # recargue la pagina -->
+            <a class="nav-link" href="#" (click)="logout(); $event.preventDefault()">Cerrar Sesion</a>
+          </li>
+        </ul>
+      } @else {
+        <!-- MENU PARA USUARIO NO AUTENTICADO -->
+        <!-- ms-auto: Alinea los enlaces a la derecha (margin-start: auto) -->
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/auth/login" routerLinkActive="active">Iniciar Sesion</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/auth/register" routerLinkActive="active">Registrarse</a>
+          </li>
+        </ul>
+      }
+    </div>
+  </div>
+</nav>

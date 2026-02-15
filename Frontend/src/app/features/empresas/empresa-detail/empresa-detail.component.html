@@ -1,0 +1,40 @@
+<!-- PLANTILLA DETALLE DE EMPRESA -->
+<!-- =============================== -->
+<!-- Muestra toda la informacion de una empresa en formato de lista descriptiva -->
+
+<div class="container mt-4">
+  <!-- @if: Solo muestra el contenido cuando 'empresa' ya fue cargada del backend -->
+  <!-- Mientras se carga (empresa es undefined), no se muestra nada -->
+  @if (empresa) {
+    <h2>Detalle de Empresa</h2>
+
+    <!-- dl (description list): Lista de definiciones de HTML -->
+    <!-- dt = termino (etiqueta), dd = descripcion (valor) -->
+    <!-- class="row" + col-sm-3/9: Usa el grid de Bootstrap para alinear etiqueta y valor -->
+    <dl class="row">
+      <dt class="col-sm-3">Ced/RUC</dt>
+      <dd class="col-sm-9">{{ empresa.cedRuc }}</dd>
+
+      <dt class="col-sm-3">Razon Social</dt>
+      <dd class="col-sm-9">{{ empresa.razonSocial }}</dd>
+
+      <dt class="col-sm-3">Nombre Comercial</dt>
+      <dd class="col-sm-9">{{ empresa.nombreComercial }}</dd>
+
+      <dt class="col-sm-3">Obligado Contabilidad</dt>
+      <!-- Operador ternario: si obligadoContabilidad es true muestra 'Si', si no 'No' -->
+      <dd class="col-sm-9">{{ empresa.obligadoContabilidad ? 'Si' : 'No' }}</dd>
+
+      <dt class="col-sm-3">Fecha Documento</dt>
+      <dd class="col-sm-9">{{ empresa.fechaDoc }}</dd>
+
+      <dt class="col-sm-3">Estado</dt>
+      <dd class="col-sm-9">{{ empresa.estado }}</dd>
+    </dl>
+
+    <!-- Botones de navegacion -->
+    <a routerLink="/empresas" class="btn btn-secondary me-2">Volver</a>
+    <!-- Navegar al formulario de edicion con el ID de la empresa -->
+    <a [routerLink]="['/empresas/editar', empresa.empresaId]" class="btn btn-warning">Editar</a>
+  }
+</div>

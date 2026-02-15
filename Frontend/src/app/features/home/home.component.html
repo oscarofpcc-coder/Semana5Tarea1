@@ -1,0 +1,36 @@
+<!-- PLANTILLA HOME (Pagina de Inicio) -->
+<!-- ===================================== -->
+<!-- Muestra contenido diferente segun si el usuario esta logueado o no -->
+
+<div class="container mt-4">
+  <div class="text-center">
+    <h1>Sistema de Gestion de Citas Medicas</h1>
+    <p class="lead">Administre empresas.</p>
+
+    <!-- @if / @else: Renderizado condicional de Angular -->
+    <!-- Verifica si el usuario tiene sesion activa -->
+    @if (authService.isAuthenticated()) {
+      <!-- USUARIO AUTENTICADO: Muestra tarjetas de navegacion a los modulos -->
+      <div class="row mt-4">
+        <div class="col-md-4 mb-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Empresas</h5>
+              <p class="card-text">Gestione las empresas registradas.</p>
+              <!-- routerLink: Navega a /empresas sin recargar la pagina -->
+              <a routerLink="/empresas" class="btn btn-primary">Ir a Empresas</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <!-- USUARIO NO AUTENTICADO: Muestra botones de login y registro -->
+      <div class="mt-4">
+        <!-- btn-lg: Boton grande | me-2: Margen derecho de 2 unidades (Bootstrap spacing) -->
+        <a routerLink="/auth/login" class="btn btn-primary btn-lg me-2">Iniciar Sesion</a>
+        <!-- btn-outline-primary: Boton con solo borde (sin relleno) -->
+        <a routerLink="/auth/register" class="btn btn-outline-primary btn-lg">Registrarse</a>
+      </div>
+    }
+  </div>
+</div>

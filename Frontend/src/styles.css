@@ -1,0 +1,17 @@
+/**
+ * ESTILOS GLOBALES DE LA APLICACION
+ * ====================================
+ * Este archivo contiene estilos CSS que aplican a TODA la aplicacion.
+ * A diferencia de los estilos de componente (ej: app.css),
+ * estos no estan encapsulados y afectan a todos los elementos.
+ */
+
+/* Importa todos los estilos de Bootstrap 5 desde node_modules */
+/* Bootstrap proporciona clases utilitarias como: container, btn, card, row, col, etc. */
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* padding-top: 56px compensa la altura del navbar fijo (fixed-top) */
+/* Sin esto, el contenido de la pagina quedaria DEBAJO del navbar y no se veria */
+body {
+  padding-top: 56px;
+}

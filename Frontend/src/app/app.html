@@ -1,0 +1,12 @@
+<!-- PLANTILLA DEL COMPONENTE RAIZ (app.html) -->
+<!-- ========================================== -->
+<!-- Esta plantilla define la estructura base de TODA la aplicacion. -->
+
+<!-- Barra de navegacion: Se muestra en TODAS las paginas -->
+<app-navbar></app-navbar>
+
+<!-- router-outlet: Este es el "espacio reservado" donde Angular -->
+<!-- carga dinamicamente el componente que corresponde a la URL actual. -->
+<!-- Ejemplo: si la URL es /empresas, aqui se renderiza EmpresaListComponent -->
+<!-- Si la URL es /auth/login, aqui se renderiza LoginComponent -->
+<router-outlet />

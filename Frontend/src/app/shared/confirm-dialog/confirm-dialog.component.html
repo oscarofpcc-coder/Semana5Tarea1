@@ -1,0 +1,26 @@
+<!-- PLANTILLA DIALOGO DE CONFIRMACION (Modal) -->
+<!-- ============================================== -->
+<!-- Estructura estandar de un modal de Bootstrap/ng-bootstrap -->
+<!-- Se compone de 3 secciones: header, body y footer -->
+
+<!-- HEADER: Titulo del modal y boton de cerrar (X) -->
+<div class="modal-header">
+  <!-- {{ title }}: Muestra el titulo pasado como @Input desde el componente padre -->
+  <h5 class="modal-title">{{ title }}</h5>
+  <!-- (click)="modal.dismiss()": Cierra el modal SIN confirmar (como cancelar) -->
+  <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+</div>
+
+<!-- BODY: Contenido/mensaje del modal -->
+<div class="modal-body">
+  <p>{{ message }}</p>
+</div>
+
+<!-- FOOTER: Botones de accion -->
+<div class="modal-footer">
+  <!-- modal.dismiss(): Cierra sin confirmar -> rechaza la Promise (catch) -->
+  <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancelar</button>
+  <!-- modal.close(true): Cierra y CONFIRMA la accion -> resuelve la Promise (then) -->
+  <!-- El valor 'true' se pasa como resultado de la Promise -->
+  <button type="button" class="btn btn-danger" (click)="modal.close(true)">Eliminar</button>
+</div>

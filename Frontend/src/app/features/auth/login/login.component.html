@@ -1,0 +1,48 @@
+<!-- PLANTILLA DEL COMPONENTE LOGIN -->
+<!-- ================================= -->
+<!-- Formulario de inicio de sesion usando Bootstrap 5 para el diseno -->
+
+<div class="container mt-4">
+  <!-- row + justify-content-center: Centra el formulario horizontalmente -->
+  <div class="row justify-content-center">
+    <!-- col-md-6: En pantallas medianas o mayores, ocupa 6 de 12 columnas (50%) -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header"><h4>Iniciar Sesion</h4></div>
+        <div class="card-body">
+
+          <!-- @if: Sintaxis moderna de Angular para condicionales en el template -->
+          <!-- Solo muestra la alerta si hay un mensaje de error -->
+          @if (error) {
+            <div class="alert alert-danger">{{ error }}</div>
+          }
+
+          <!-- (ngSubmit): Evento que se dispara al enviar el formulario -->
+          <!-- Llama al metodo onSubmit() del componente TypeScript -->
+          <form (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <!-- [(ngModel)]: Two-way data binding (enlace bidireccional) -->
+              <!-- Sincroniza el valor del input con la propiedad 'email' del componente -->
+              <!-- Si el usuario escribe "test@mail.com", this.email = "test@mail.com" -->
+              <input type="email" class="form-control" id="email" [(ngModel)]="email" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" [(ngModel)]="password" name="password" required>
+            </div>
+
+            <!-- [disabled]: Property binding - deshabilita el boton mientras loading es true -->
+            <!-- {{ }}: Interpolacion - muestra texto dinamico segun el estado de loading -->
+            <button type="submit" class="btn btn-primary" [disabled]="loading">
+              {{ loading ? 'Ingresando...' : 'Ingresar' }}
+            </button>
+          </form>
+
+          <!-- routerLink: Crea un enlace de navegacion interna (SPA, sin recargar la pagina) -->
+          <p class="mt-3">No tienes cuenta? <a routerLink="/auth/register">Registrarse</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,528 @@
+{
+	"info": {
+		"_postman_id": "sisgestion-citas-medicas",
+		"name": "SisGestionCitasMedicas",
+		"description": "Coleccion de endpoints para el Sistema de Gestion de Citas Medicas.\n\nIncluye dos tipos de endpoints:\n\n1. **MVC (Vistas Razor):** Usan cookies de sesion y requieren __RequestVerificationToken (anti-forgery).\n2. **API REST (JSON):** Usan autenticacion JWT Bearer. El token se obtiene de /api/auth/login o /api/auth/register.\n\n**Flujo para probar la API REST:**\n1. Ejecutar 'POST Registrar Usuario (JWT)' o 'POST Login (JWT)'\n2. Copiar el token de la respuesta\n3. La variable {{jwtToken}} se actualiza automaticamente en los endpoints de registro y login\n4. Los demas endpoints de la API ya incluyen el header Authorization: Bearer {{jwtToken}}",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5270",
+			"type": "string"
+		},
+		{
+			"key": "antiForgeryToken",
+			"value": "",
+			"type": "string",
+			"description": "Token anti-forgery obtenido del formulario HTML (para endpoints MVC)"
+		},
+		{
+			"key": "jwtToken",
+			"value": "",
+			"type": "string",
+			"description": "Token JWT obtenido de /api/auth/login o /api/auth/register (para endpoints API REST)"
+		}
+	],
+	"auth": {
+		"type": "noauth"
+	},
+	"item": [
+		{
+			"name": "API REST - Auth (JWT)",
+			"description": "Endpoints de autenticacion para la API REST.\nGeneran tokens JWT que se usan en los demas endpoints de la API.\nRuta base: /api/auth",
+			"item": [
+				{
+					"name": "POST Registrar Usuario (JWT)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Si el registro fue exitoso, guarda el token JWT automaticamente",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data && jsonData.data.token) {",
+									"        pm.collectionVariables.set('jwtToken', jsonData.data.token);",
+									"        console.log('Token JWT guardado automaticamente');",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"usuario@ejemplo.com\",\n  \"password\": \"Password123!\",\n  \"confirmPassword\": \"Password123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "register"]
+						},
+						"description": "Registra un nuevo usuario y retorna un token JWT.\nEl token se guarda automaticamente en la variable {{jwtToken}}.\n\nRespuesta exitosa (200):\n{\n  \"success\": true,\n  \"data\": {\n    \"token\": \"eyJhbGciOi...\",\n    \"expiration\": \"2026-02-14T...\",\n    \"email\": \"usuario@ejemplo.com\"\n  }\n}\n\nRespuesta error (400):\n{\n  \"success\": false,\n  \"message\": \"Error en el registro.\",\n  \"errors\": [\"Passwords must have at least one digit.\"]\n}"
+					}
+				},
+				{
+					"name": "POST Login (JWT)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Si el login fue exitoso, guarda el token JWT automaticamente",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data && jsonData.data.token) {",
+									"        pm.collectionVariables.set('jwtToken', jsonData.data.token);",
+									"        console.log('Token JWT guardado automaticamente');",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"usuario@ejemplo.com\",\n  \"password\": \"Password123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						},
+						"description": "Inicia sesion con email y password. Retorna un token JWT.\nEl token se guarda automaticamente en la variable {{jwtToken}}.\nEl token expira en 10 minutos (configurado en appsettings.json).\n\nRespuesta exitosa (200):\n{\n  \"success\": true,\n  \"data\": {\n    \"token\": \"eyJhbGciOi...\",\n    \"expiration\": \"2026-02-14T...\",\n    \"email\": \"usuario@ejemplo.com\"\n  }\n}\n\nRespuesta error (401):\n{\n  \"success\": false,\n  \"message\": \"Credenciales invalidas.\"\n}"
+					}
+				}
+			]
+		},
+		{
+			"name": "API REST - Empresas (CRUD)",
+			"description": "Endpoints API REST para el CRUD de Empresas.\nTodos requieren token JWT en el header Authorization.\nRuta base: /api/empresas",
+			"item": [
+				{
+					"name": "GET Listar Empresas (API)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwtToken}}",
+								"description": "Token JWT obtenido del login/registro"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/empresas",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "empresas"]
+						},
+						"description": "Retorna la lista completa de empresas en formato JSON.\nRequiere autenticacion JWT.\n\nRespuesta exitosa (200): Array de empresas\n[\n  {\n    \"empresaId\": 1,\n    \"cedRuc\": \"1234567890001\",\n    \"razonSocial\": \"Hospital Central\",\n    \"nombreComercial\": \"Hospital Central S.A.\",\n    \"obligadoContabilidad\": true,\n    \"fechaDoc\": \"2026-01-01\",\n    \"estado\": \"A\"\n  }\n]\n\nRespuesta sin token (401): Unauthorized"
+					}
+				},
+				{
+					"name": "GET Obtener Empresa por ID (API)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwtToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/empresas/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "empresas", "1"]
+						},
+						"description": "Retorna una empresa especifica por su ID.\n\nRespuesta exitosa (200): Objeto empresa\nRespuesta no encontrada (404): Not Found\nRespuesta sin token (401): Unauthorized"
+					}
+				},
+				{
+					"name": "POST Crear Empresa (API)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwtToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"empresaId\": 0,\n  \"cedRuc\": \"1234567890001\",\n  \"razonSocial\": \"Hospital Central\",\n  \"nombreComercial\": \"Hospital Central S.A.\",\n  \"obligadoContabilidad\": true,\n  \"fechaDoc\": \"2026-01-01\",\n  \"estado\": \"A\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/empresas",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "empresas"]
+						},
+						"description": "Crea una nueva empresa. Envia los datos en formato JSON.\nEl campo empresaId se puede enviar como 0 (la BD lo asigna automaticamente).\n\nRespuesta exitosa (201): Created - retorna la empresa creada con su ID asignado\nHeader Location: /api/empresas/{nuevoId}\nRespuesta sin token (401): Unauthorized"
+					}
+				},
+				{
+					"name": "PUT Actualizar Empresa (API)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwtToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"empresaId\": 1,\n  \"cedRuc\": \"1234567890001\",\n  \"razonSocial\": \"Hospital Central Actualizado\",\n  \"nombreComercial\": \"Hospital Central S.A.\",\n  \"obligadoContabilidad\": true,\n  \"fechaDoc\": \"2026-01-01\",\n  \"estado\": \"A\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/empresas/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "empresas", "1"]
+						},
+						"description": "Actualiza una empresa existente. El ID en la URL debe coincidir con empresaId del body.\n\nRespuesta exitosa (204): No Content (actualizacion exitosa, sin cuerpo)\nRespuesta ID no coincide (400): Bad Request\nRespuesta no encontrada (404): Not Found\nRespuesta sin token (401): Unauthorized"
+					}
+				},
+				{
+					"name": "DELETE Eliminar Empresa (API)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwtToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/empresas/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "empresas", "1"]
+						},
+						"description": "Elimina una empresa por su ID.\n\nRespuesta exitosa (204): No Content (eliminacion exitosa)\nRespuesta no encontrada (404): Not Found\nRespuesta sin token (401): Unauthorized"
+					}
+				}
+			]
+		},
+		{
+			"name": "MVC - Identity (Auth)",
+			"description": "Endpoints de autenticacion con ASP.NET Core Identity (vistas Razor con cookies).\nEstos son los formularios HTML del sistema MVC, no de la API REST.",
+			"item": [
+				{
+					"name": "GET Login Page",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/Identity/Account/Login",
+							"host": ["{{baseUrl}}"],
+							"path": ["Identity", "Account", "Login"]
+						}
+					}
+				},
+				{
+					"name": "POST Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{ "key": "Input.Email", "value": "usuario@ejemplo.com", "type": "text" },
+								{ "key": "Input.Password", "value": "Password123!", "type": "text" },
+								{ "key": "Input.RememberMe", "value": "false", "type": "text" },
+								{ "key": "__RequestVerificationToken", "value": "{{antiForgeryToken}}", "type": "text" }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/Identity/Account/Login",
+							"host": ["{{baseUrl}}"],
+							"path": ["Identity", "Account", "Login"]
+						}
+					}
+				},
+				{
+					"name": "GET Register Page",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/Identity/Account/Register",
+							"host": ["{{baseUrl}}"],
+							"path": ["Identity", "Account", "Register"]
+						}
+					}
+				},
+				{
+					"name": "POST Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{ "key": "Input.Email", "value": "nuevo@ejemplo.com", "type": "text" },
+								{ "key": "Input.Password", "value": "Password123!", "type": "text" },
+								{ "key": "Input.ConfirmPassword", "value": "Password123!", "type": "text" },
+								{ "key": "__RequestVerificationToken", "value": "{{antiForgeryToken}}", "type": "text" }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/Identity/Account/Register",
+							"host": ["{{baseUrl}}"],
+							"path": ["Identity", "Account", "Register"]
+						}
+					}
+				},
+				{
+					"name": "POST Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{ "key": "__RequestVerificationToken", "value": "{{antiForgeryToken}}", "type": "text" }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/Identity/Account/Logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["Identity", "Account", "Logout"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "MVC - Home",
+			"description": "Paginas publicas (AllowAnonymous)",
+			"item": [
+				{
+					"name": "GET Index",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/",
+							"host": ["{{baseUrl}}"],
+							"path": [""]
+						}
+					}
+				},
+				{
+					"name": "GET Privacy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/Home/Privacy",
+							"host": ["{{baseUrl}}"],
+							"path": ["Home", "Privacy"]
+						}
+					}
+				},
+				{
+					"name": "GET Error",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/Home/Error",
+							"host": ["{{baseUrl}}"],
+							"path": ["Home", "Error"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "MVC - Empresas",
+			"description": "CRUD de Empresas con vistas Razor [Authorize].\nRequiere haber iniciado sesion con cookies (Identity).",
+			"item": [
+				{
+					"name": "GET Listar Empresas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/Empresas",
+							"host": ["{{baseUrl}}"],
+							"path": ["Empresas"]
+						}
+					}
+				},
+				{
+					"name": "GET Detalle Empresa",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/Empresas/Details/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["Empresas", "Details", "1"]
+						}
+					}
+				},
+				{
+					"name": "GET Formulario Crear Empresa",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/Empresas/Create",
+							"host": ["{{baseUrl}}"],
+							"path": ["Empresas", "Create"]
+						}
+					}
+				},
+				{
+					"name": "POST Crear Empresa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{ "key": "EmpresaId", "value": "0", "type": "text" },
+								{ "key": "CedRuc", "value": "1234567890001", "type": "text" },
+								{ "key": "RazonSocial", "value": "Hospital Central", "type": "text" },
+								{ "key": "NombreComercial", "value": "Hospital Central S.A.", "type": "text" },
+								{ "key": "ObligadoContabilidad", "value": "true", "type": "text" },
+								{ "key": "FechaDoc", "value": "2026-01-01", "type": "text" },
+								{ "key": "Estado", "value": "A", "type": "text" },
+								{ "key": "__RequestVerificationToken", "value": "{{antiForgeryToken}}", "type": "text" }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/Empresas/Create",
+							"host": ["{{baseUrl}}"],
+							"path": ["Empresas", "Create"]
+						}
+					}
+				},
+				{
+					"name": "GET Formulario Editar Empresa",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/Empresas/Edit/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["Empresas", "Edit", "1"]
+						}
+					}
+				},
+				{
+					"name": "POST Editar Empresa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{ "key": "EmpresaId", "value": "1", "type": "text" },
+								{ "key": "CedRuc", "value": "1234567890001", "type": "text" },
+								{ "key": "RazonSocial", "value": "Hospital Central Actualizado", "type": "text" },
+								{ "key": "NombreComercial", "value": "Hospital Central S.A.", "type": "text" },
+								{ "key": "ObligadoContabilidad", "value": "true", "type": "text" },
+								{ "key": "FechaDoc", "value": "2026-01-01", "type": "text" },
+								{ "key": "Estado", "value": "A", "type": "text" },
+								{ "key": "__RequestVerificationToken", "value": "{{antiForgeryToken}}", "type": "text" }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/Empresas/Edit/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["Empresas", "Edit", "1"]
+						}
+					}
+				},
+				{
+					"name": "GET Confirmar Eliminar Empresa",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/Empresas/Delete/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["Empresas", "Delete", "1"]
+						}
+					}
+				},
+				{
+					"name": "POST Eliminar Empresa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{ "key": "id", "value": "1", "type": "text" },
+								{ "key": "__RequestVerificationToken", "value": "{{antiForgeryToken}}", "type": "text" }
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/Empresas/Delete/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["Empresas", "Delete", "1"]
+						}
+					}
+				}
+			]
+		}
+	]
+}

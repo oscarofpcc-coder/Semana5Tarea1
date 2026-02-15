@@ -1,0 +1,48 @@
+<!-- PLANTILLA LISTA DE EMPRESAS -->
+<!-- ============================== -->
+<!-- Muestra una tabla con todas las empresas y botones de accion (CRUD) -->
+
+<div class="container mt-4">
+  <!-- Encabezado con titulo y boton de crear -->
+  <!-- d-flex + justify-content-between: Alinea elementos en los extremos (titulo a la izquierda, boton a la derecha) -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Empresas</h2>
+    <!-- routerLink="crear": Navega a /empresas/crear (ruta relativa) -->
+    <a routerLink="crear" class="btn btn-primary">Crear Nueva</a>
+  </div>
+
+  <!-- Tabla Bootstrap con filas alternadas (table-striped) -->
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Ced/RUC</th>
+        <th>Razon Social</th>
+        <th>Nombre Comercial</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- @for: Itera sobre el arreglo de empresas para crear una fila por cada una -->
+      <!-- track e.empresaId: Angular usa este valor unico para rastrear cambios en la lista -->
+      <!-- Esto optimiza el rendimiento al actualizar la tabla (solo re-renderiza lo que cambio) -->
+      @for (e of empresas; track e.empresaId) {
+        <tr>
+          <!-- {{ }}: Interpolacion - muestra el valor de la propiedad en el HTML -->
+          <td>{{ e.cedRuc }}</td>
+          <td>{{ e.razonSocial }}</td>
+          <td>{{ e.nombreComercial }}</td>
+          <td>{{ e.estado }}</td>
+          <td>
+            <!-- [routerLink]: Property binding con arreglo para construir la URL dinamicamente -->
+            <!-- ['detalle', e.empresaId] genera: /empresas/detalle/5 (si empresaId es 5) -->
+            <a [routerLink]="['detalle', e.empresaId]" class="btn btn-info btn-sm me-1">Detalle</a>
+            <a [routerLink]="['editar', e.empresaId]" class="btn btn-warning btn-sm me-1">Editar</a>
+            <!-- (click): Event binding - ejecuta el metodo confirmDelete() al hacer click -->
+            <button class="btn btn-danger btn-sm" (click)="confirmDelete(e)">Eliminar</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

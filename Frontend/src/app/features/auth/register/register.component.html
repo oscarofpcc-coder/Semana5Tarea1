@@ -1,0 +1,54 @@
+<!-- PLANTILLA DEL COMPONENTE REGISTRO -->
+<!-- ==================================== -->
+<!-- Formulario para crear una cuenta nueva. Similar al login pero con campo extra. -->
+
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header"><h4>Registrarse</h4></div>
+        <div class="card-body">
+
+          <!-- Bloque de errores: muestra el error principal y una lista de errores detallados -->
+          @if (error) {
+            <div class="alert alert-danger">
+              {{ error }}
+              <!-- @if anidado: Solo muestra la lista si hay errores detallados -->
+              @if (errors.length) {
+                <ul class="mb-0 mt-2">
+                  <!-- @for: Sintaxis moderna de Angular para iterar sobre un arreglo -->
+                  <!-- track e: Angular necesita un identificador unico para optimizar el renderizado -->
+                  @for (e of errors; track e) {
+                    <li>{{ e }}</li>
+                  }
+                </ul>
+              }
+            </div>
+          }
+
+          <form (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" [(ngModel)]="email" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" [(ngModel)]="password" name="password" required>
+            </div>
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Confirmar Password</label>
+              <!-- Este campo se compara con 'password' en el backend para verificar que coincidan -->
+              <input type="password" class="form-control" id="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword" required>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="loading">
+              {{ loading ? 'Registrando...' : 'Registrarse' }}
+            </button>
+          </form>
+
+          <!-- Enlace al login si el usuario ya tiene cuenta -->
+          <p class="mt-3">Ya tiene cuenta? <a routerLink="/auth/login">Iniciar Sesion</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<!-- PLANTILLA FORMULARIO DE EMPRESA (Crear / Editar) -->
+<!-- =================================================== -->
+<!-- Un solo formulario que sirve tanto para crear como para editar -->
+
+<div class="container mt-4">
+  <!-- Titulo dinamico: cambia entre "Editar" y "Crear" segun el modo -->
+  <!-- El operador ternario (condicion ? valor_si : valor_no) se usa en la interpolacion -->
+  <h2>{{ isEdit ? 'Editar' : 'Crear' }} Empresa</h2>
+
+  <!-- Alerta de error (solo visible si hay error) -->
+  @if (error) {
+    <div class="alert alert-danger">{{ error }}</div>
+  }
+
+  <!-- Formulario con enlace bidireccional [(ngModel)] para cada campo -->
+  <!-- (ngSubmit): Ejecuta onSubmit() al enviar el formulario -->
+  <form (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label for="cedRuc" class="form-label">Ced/RUC</label>
+      <!-- [(ngModel)]="empresa.cedRuc": Enlaza este input con la propiedad cedRuc del objeto empresa -->
+      <!-- required: Validacion HTML5 - el campo no puede estar vacio -->
+      <!-- maxlength: Limita la cantidad de caracteres que se pueden escribir -->
+      <input type="text" class="form-control" id="cedRuc" [(ngModel)]="empresa.cedRuc" name="cedRuc" required maxlength="20">
+    </div>
+    <div class="mb-3">
+      <label for="razonSocial" class="form-label">Razon Social</label>
+      <input type="text" class="form-control" id="razonSocial" [(ngModel)]="empresa.razonSocial" name="razonSocial" required maxlength="100">
+    </div>
+    <div class="mb-3">
+      <label for="nombreComercial" class="form-label">Nombre Comercial</label>
+      <!-- Este campo NO tiene 'required' porque es opcional en el modelo -->
+      <input type="text" class="form-control" id="nombreComercial" [(ngModel)]="empresa.nombreComercial" name="nombreComercial" maxlength="100">
+    </div>
+    <div class="mb-3 form-check">
+      <!-- Checkbox: Se enlaza a un boolean (true/false) -->
+      <input type="checkbox" class="form-check-input" id="obligadoContabilidad" [(ngModel)]="empresa.obligadoContabilidad" name="obligadoContabilidad">
+      <label class="form-check-label" for="obligadoContabilidad">Obligado Contabilidad</label>
+    </div>
+    <div class="mb-3">
+      <label for="fechaDoc" class="form-label">Fecha Documento</label>
+      <input type="text" class="form-control" id="fechaDoc" [(ngModel)]="empresa.fechaDoc" name="fechaDoc">
+    </div>
+    <div class="mb-3">
+      <label for="estado" class="form-label">Estado</label>
+      <input type="text" class="form-control" id="estado" [(ngModel)]="empresa.estado" name="estado">
+    </div>
+
+    <!-- Botones de accion -->
+    <button type="submit" class="btn btn-primary me-2">Guardar</button>
+    <!-- routerLink: Navega de vuelta a la lista sin enviar el formulario -->
+    <a routerLink="/empresas" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>

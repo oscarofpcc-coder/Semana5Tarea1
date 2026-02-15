@@ -1,0 +1,59 @@
+﻿@model SisGestionCitasMedicas.Models.Empresa
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Empresa</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="EmpresaId" />
+            <div class="form-group">
+                <label asp-for="CedRuc" class="control-label"></label>
+                <input asp-for="CedRuc" class="form-control" />
+                <span asp-validation-for="CedRuc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RazonSocial" class="control-label"></label>
+                <input asp-for="RazonSocial" class="form-control" />
+                <span asp-validation-for="RazonSocial" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NombreComercial" class="control-label"></label>
+                <input asp-for="NombreComercial" class="form-control" />
+                <span asp-validation-for="NombreComercial" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ObligadoContabilidad" class="control-label"></label>
+                <input asp-for="ObligadoContabilidad" class="form-control" />
+                <span asp-validation-for="ObligadoContabilidad" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaDoc" class="control-label"></label>
+                <input asp-for="FechaDoc" class="form-control" />
+                <span asp-validation-for="FechaDoc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Estado" class="control-label"></label>
+                <input asp-for="Estado" class="form-control" />
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
